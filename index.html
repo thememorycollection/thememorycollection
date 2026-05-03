@@ -1,381 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>In Loving Memory of {{name}}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
+<meta charset="UTF-8">
+<title>Returning Hearts – Tribute Page Creator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    :root {
-      --bg-color: #050509;
-      --bg-gradient-top: #050509;
-      --bg-gradient-bottom: #151520;
-      --text-main: #f5f5f5;
-      --text-muted: #b3b3c2;
-      --accent: #f5d28a;
-      --accent-soft: rgba(245, 210, 138, 0.25);
-      --card-bg: rgba(15, 15, 25, 0.9);
-      --border-soft: rgba(255, 255, 255, 0.08);
-      --max-width: 720px;
-      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.75);
-      --radius-lg: 18px;
-      --radius-md: 12px;
-    }
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #0b0b10;
+    color: #eee;
+    padding: 20px;
+    max-width: 720px;
+    margin: auto;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f5d28a;
+  }
+  label {
+    display: block;
+    margin-top: 14px;
+    font-weight: 600;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a22;
+    color: #eee;
+  }
+  button {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background: #f5d28a;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  #previewSection {
+    display: none;
+    margin-top: 20px;
+  }
+  iframe {
+    width: 100%;
+    height: 700px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #000;
+  }
+</style>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-    }
-
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(245, 210, 138, 0.18), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 60%),
-        linear-gradient(to bottom, var(--bg-gradient-top), var(--bg-gradient-bottom));
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-    }
-
-    .page-wrapper {
-      width: 100%;
-      max-width: var(--max-width);
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-soft);
-      border: 1px solid var(--border-soft);
-      padding: 32px 24px 28px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at top center, rgba(245, 210, 138, 0.08), transparent 60%),
-        radial-gradient(circle at bottom center, rgba(0, 0, 0, 0.9), transparent 70%);
-      opacity: 0.9;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .card-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .header-label {
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
-
-    .name {
-      font-family: "Playfair Display", "Times New Roman", serif;
-      font-size: clamp(1.9rem, 2.4vw + 1.2rem, 2.6rem);
-      letter-spacing: 0.04em;
-      margin-bottom: 6px;
-    }
-
-    .dates {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .content-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-      gap: 24px;
-      align-items: center;
-    }
-
-    @media (max-width: 720px) {
-      .card {
-        padding: 24px 18px 22px;
-      }
-
-      .content-layout {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-    }
-
-    .portrait-wrapper {
-      display: flex;
-      justify-content: center;
-    }
-
-    .portrait-frame {
-      position: relative;
-      border-radius: 999px;
-      padding: 4px;
-      background:
-        radial-gradient(circle at top, rgba(245, 210, 138, 0.7), transparent 65%),
-        radial-gradient(circle at bottom, rgba(0, 0, 0, 0.9), transparent 70%);
-      box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 18px 40px rgba(0, 0, 0, 0.9);
-      max-width: 260px;
-      width: 100%;
-    }
-
-    .portrait-inner {
-      border-radius: 999px;
-      overflow: hidden;
-      background: radial-gradient(circle at center, #333, #111);
-      aspect-ratio: 3 / 4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .portrait-inner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .portrait-placeholder {
-      text-align: center;
-      padding: 24px 16px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .portrait-placeholder-icon {
-      font-size: 2.2rem;
-      margin-bottom: 8px;
-      opacity: 0.7;
-    }
-
-    .text-block {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .quote {
-      font-size: 0.98rem;
-      line-height: 1.7;
-      color: var(--text-main);
-    }
-
-    .quote::before,
-    .quote::after {
-      content: "“";
-      font-family: "Playfair Display", "Times New Roman", serif;
-      color: var(--accent);
-      opacity: 0.7;
-      margin-right: 4px;
-    }
-
-    .quote::after {
-      content: "”";
-      margin-left: 4px;
-      margin-right: 0;
-    }
-
-    .subtext {
-      font-size: 0.86rem;
-      color: var(--text-muted);
-    }
-
-    .divider {
-      margin: 22px 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: var(--accent);
-      font-size: 0.78rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(
-        to right,
-        transparent,
-        rgba(245, 210, 138, 0.7),
-        transparent
-      );
-      max-width: 120px;
-    }
-
-    .candle-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .candle-glow {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      border-radius: 999px;
-      background: radial-gradient(circle at center, #fbe3a4, #f5a623 55%, transparent 70%);
-      box-shadow:
-        0 0 25px rgba(245, 210, 138, 0.8),
-        0 0 80px rgba(245, 210, 138, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-    }
-
-    .candle-flame {
-      width: 18px;
-      height: 32px;
-      border-radius: 50% 50% 50% 50%;
-      background:
-        radial-gradient(circle at 30% 20%, #fff, transparent 55%),
-        radial-gradient(circle at 70% 20%, #ffe9b8, transparent 60%),
-        linear-gradient(to bottom, #ffe9b8, #f5a623 70%, #f08a1a 100%);
-      box-shadow:
-        0 0 12px rgba(255, 255, 255, 0.9),
-        0 0 26px rgba(245, 210, 138, 0.9);
-      transform-origin: bottom center;
-      animation: candle-flicker 3.2s ease-in-out infinite;
-    }
-
-    .candle-base {
-      position: absolute;
-      bottom: -10px;
-      width: 26px;
-      height: 18px;
-      border-radius: 999px;
-      background: radial-gradient(circle at top, #f5f5f5, #c9c9c9 60%, #8a8a8a 100%);
-      box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.7),
-        0 -2px 4px rgba(255, 255, 255, 0.4);
-    }
-
-    .candle-caption {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-align: center;
-    }
-
-    .footer {
-      margin-top: 18px;
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .footer span {
-      opacity: 0.8;
-    }
-
-    .footer-mark {
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      color: var(--accent);
-      display: block;
-      margin-top: 4px;
-    }
-
-    @keyframes candle-flicker {
-      0%   { transform: translateX(0) scaleY(1); opacity: 1; }
-      20%  { transform: translateX(-1px) scaleY(0.96); opacity: 0.96; }
-      40%  { transform: translateX(1px) scaleY(1.02); opacity: 1; }
-      60%  { transform: translateX(-0.5px) scaleY(0.98); opacity: 0.97; }
-      80%  { transform: translateX(0.8px) scaleY(1.01); opacity: 1; }
-      100% { transform: translateX(0) scaleY(1); opacity: 1; }
-    }
-  </style>
 </head>
 <body>
-  <div class="page-wrapper">
-    <main class="card">
-      <div class="card-inner">
-        <header class="header">
-          <div class="header-label">In loving memory of</div>
-          <h1 class="name">{{name}}</h1>
-          <div class="dates">{{dates}}</div>
-        </header>
 
-        <section class="content-layout">
-          <div class="portrait-wrapper">
-            <div class="portrait-frame">
-              <div class="portrait-inner">
-                <!-- If you have an image, inject <img src="{{photoDataUrl}}" alt="Portrait of {{name}}" /> -->
-                {{#ifPhoto}}
-                <img src="{{photoDataUrl}}" alt="Portrait of {{name}}" />
-                {{/ifPhoto}}
+<h1>Returning Hearts – Tribute Page Creator</h1>
 
-                {{#ifNoPhoto}}
-                <div class="portrait-placeholder">
-                  <div class="portrait-placeholder-icon">🕊️</div>
-                  <div>Forever in our hearts</div>
-                </div>
-                {{/ifNoPhoto}}
-              </div>
-            </div>
-          </div>
+<!-- FORM SECTION -->
+<div id="formSection">
 
-          <div class="text-block">
-            <p class="quote">
-              {{message}}
-            </p>
-            <p class="subtext">
-              This page is a quiet place to pause, remember, and honour a life that touched many hearts.
-            </p>
-          </div>
-        </section>
+  <label>Name of Loved One</label>
+  <input id="nameInput" placeholder="e.g., Duncan McGregor">
 
-        <div class="divider">
-          <div class="divider-line"></div>
-          <div>Candle of remembrance</div>
-          <div class="divider-line"></div>
-        </div>
+  <label>Dates</label>
+  <input id="datesInput" placeholder="e.g., 1948 – 2026">
 
-        <section class="candle-section">
-          <div class="candle-glow">
-            <div class="candle-flame"></div>
-            <div class="candle-base"></div>
-          </div>
-          <div class="candle-caption">
-            A light that continues to shine in the memories of those who loved {{name}}.
-          </div>
-        </section>
+  <label>Message</label>
+  <textarea id="messageInput" rows="4" placeholder="A short message or tribute..."></textarea>
 
-        <footer class="footer">
-          <span>Created as a digital place of remembrance.</span>
-          <span class="footer-mark">Returning Hearts</span>
-        </footer>
-      </div>
-    </main>
-  </div>
+  <label>Photo (optional)</label>
+  <input type="file" id="photoInput" accept="image/*">
+
+  <button onclick="generateTribute()">Generate Tribute Page</button>
+</div>
+
+<!-- PREVIEW SECTION -->
+<div id="previewSection">
+  <h2>Preview of Tribute Page</h2>
+  <iframe id="previewFrame"></iframe>
+
+  <button onclick="goBack()">Back to Form</button>
+  <button onclick="downloadHTML()">Download Tribute Page</button>
+</div>
+
+<script>
+let photoDataUrl = "";
+
+// Handle photo upload (browser-only)
+document.getElementById("photoInput").addEventListener("change", function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    photoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// Switch to preview mode
+function showPreview(html) {
+  const frame = document.getElementById("previewFrame");
+  frame.srcdoc = html;
+
+  document.getElementById("formSection").style.display = "none";
+  document.getElementById("previewSection").style.display = "block";
+
+  window.generatedHTML = html;
+}
+
+// Go back to form
+function goBack() {
+  document.getElementById("previewSection").style.display = "none";
+  document.getElementById("formSection").style.display = "block";
+}
+
+// Download tribute page
+function downloadHTML() {
+  if (!window.generatedHTML) return alert("Generate the page first!");
+
+  const blob = new Blob([window.generatedHTML], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tribute-page.html";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+// Generate tribute page HTML
+function generateTribute() {
+  const name = document.getElementById("nameInput").value;
+  const dates = document.getElementById("datesInput").value;
+  const message = document.getElementById("messageInput").value;
+
+  const tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+
+  showPreview(tributeHTML);
+}
+
+// Tribute page template (dark candle-lit)
+function generateTemplate(name, dates, message, photo) {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>In Loving Memory of ${name}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: linear-gradient(to bottom, #050509, #151520);
+    color: #f5f5f5;
+    padding: 20px;
+    max-width: 720px;
+    margin: auto;
+  }
+  .header-label {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #b3b3c2;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  h1 {
+    font-family: "Playfair Display", serif;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .dates {
+    text-align: center;
+    color: #b3b3c2;
+    letter-spacing: 0.16em;
+  }
+  .portrait {
+    margin: 30px auto;
+    width: 260px;
+    height: 340px;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+  }
+  .portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .quote {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .candle {
+    margin: 40px auto;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
+    border-radius: 999px;
+    box-shadow: 0 0 25px rgba(245,210,138,0.8);
+    position: relative;
+  }
+  .flame {
+    width: 18px;
+    height: 32px;
+    background: linear-gradient(to bottom, #fff, #f5a623 70%, #f08a1a);
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 31px;
+    animation: flicker 3s infinite ease-in-out;
+  }
+  @keyframes flicker {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(1px); }
+    100% { transform: translateX(0); }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="header-label">In loving memory of</div>
+<h1>${name}</h1>
+<div class="dates">${dates}</div>
+
+<div class="portrait">
+  ${photo ? `<img src="${photo}" alt="Portrait of ${name}">` : ""}
+</div>
+
+<div class="quote">“${message}”</div>
+
+<div class="candle">
+  <div class="flame"></div>
+</div>
+
 </body>
 </html>
+  `;
+}
+</script>
+
+</body>
