@@ -1,26 +1,381 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>The Memory Collection</title>
-  <link rel="stylesheet" href="assets/style.css">
+  <meta charset="UTF-8" />
+  <title>In Loving Memory of {{name}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <style>
+    :root {
+      --bg-color: #050509;
+      --bg-gradient-top: #050509;
+      --bg-gradient-bottom: #151520;
+      --text-main: #f5f5f5;
+      --text-muted: #b3b3c2;
+      --accent: #f5d28a;
+      --accent-soft: rgba(245, 210, 138, 0.25);
+      --card-bg: rgba(15, 15, 25, 0.9);
+      --border-soft: rgba(255, 255, 255, 0.08);
+      --max-width: 720px;
+      --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.75);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(245, 210, 138, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.06), transparent 60%),
+        linear-gradient(to bottom, var(--bg-gradient-top), var(--bg-gradient-bottom));
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .page-wrapper {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border-soft);
+      padding: 32px 24px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at top center, rgba(245, 210, 138, 0.08), transparent 60%),
+        radial-gradient(circle at bottom center, rgba(0, 0, 0, 0.9), transparent 70%);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header-label {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .name {
+      font-family: "Playfair Display", "Times New Roman", serif;
+      font-size: clamp(1.9rem, 2.4vw + 1.2rem, 2.6rem);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .dates {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .card {
+        padding: 24px 18px 22px;
+      }
+
+      .content-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    .portrait-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+
+    .portrait-frame {
+      position: relative;
+      border-radius: 999px;
+      padding: 4px;
+      background:
+        radial-gradient(circle at top, rgba(245, 210, 138, 0.7), transparent 65%),
+        radial-gradient(circle at bottom, rgba(0, 0, 0, 0.9), transparent 70%);
+      box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 18px 40px rgba(0, 0, 0, 0.9);
+      max-width: 260px;
+      width: 100%;
+    }
+
+    .portrait-inner {
+      border-radius: 999px;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #333, #111);
+      aspect-ratio: 3 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portrait-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .portrait-placeholder {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .portrait-placeholder-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+
+    .text-block {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .quote {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      color: var(--text-main);
+    }
+
+    .quote::before,
+    .quote::after {
+      content: "“";
+      font-family: "Playfair Display", "Times New Roman", serif;
+      color: var(--accent);
+      opacity: 0.7;
+      margin-right: 4px;
+    }
+
+    .quote::after {
+      content: "”";
+      margin-left: 4px;
+      margin-right: 0;
+    }
+
+    .subtext {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .divider {
+      margin: 22px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        rgba(245, 210, 138, 0.7),
+        transparent
+      );
+      max-width: 120px;
+    }
+
+    .candle-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .candle-glow {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
+      background: radial-gradient(circle at center, #fbe3a4, #f5a623 55%, transparent 70%);
+      box-shadow:
+        0 0 25px rgba(245, 210, 138, 0.8),
+        0 0 80px rgba(245, 210, 138, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    .candle-flame {
+      width: 18px;
+      height: 32px;
+      border-radius: 50% 50% 50% 50%;
+      background:
+        radial-gradient(circle at 30% 20%, #fff, transparent 55%),
+        radial-gradient(circle at 70% 20%, #ffe9b8, transparent 60%),
+        linear-gradient(to bottom, #ffe9b8, #f5a623 70%, #f08a1a 100%);
+      box-shadow:
+        0 0 12px rgba(255, 255, 255, 0.9),
+        0 0 26px rgba(245, 210, 138, 0.9);
+      transform-origin: bottom center;
+      animation: candle-flicker 3.2s ease-in-out infinite;
+    }
+
+    .candle-base {
+      position: absolute;
+      bottom: -10px;
+      width: 26px;
+      height: 18px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #f5f5f5, #c9c9c9 60%, #8a8a8a 100%);
+      box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.7),
+        0 -2px 4px rgba(255, 255, 255, 0.4);
+    }
+
+    .candle-caption {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .footer span {
+      opacity: 0.8;
+    }
+
+    .footer-mark {
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: var(--accent);
+      display: block;
+      margin-top: 4px;
+    }
+
+    @keyframes candle-flicker {
+      0%   { transform: translateX(0) scaleY(1); opacity: 1; }
+      20%  { transform: translateX(-1px) scaleY(0.96); opacity: 0.96; }
+      40%  { transform: translateX(1px) scaleY(1.02); opacity: 1; }
+      60%  { transform: translateX(-0.5px) scaleY(0.98); opacity: 0.97; }
+      80%  { transform: translateX(0.8px) scaleY(1.01); opacity: 1; }
+      100% { transform: translateX(0) scaleY(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Returning Hearts</h1>
-    <p>Beautiful memorial keepsakes with QR-linked tribute pages.</p>
-    <a class="button" href="products.html">View Packages</a>
-  </header>
+  <div class="page-wrapper">
+    <main class="card">
+      <div class="card-inner">
+        <header class="header">
+          <div class="header-label">In loving memory of</div>
+          <h1 class="name">{{name}}</h1>
+          <div class="dates">{{dates}}</div>
+        </header>
 
-  <section>
-    <h2>How It Works</h2>
-    <ol>
-      <li>Select your memorial package.</li>
-      <li>Create your tribute page (no images stored by us).</li>
-      <li>We print your QR code and craft your item.</li>
-      <li>Your keepsake arrives ready to display.</li>
-    </ol>
-  </section>
+        <section class="content-layout">
+          <div class="portrait-wrapper">
+            <div class="portrait-frame">
+              <div class="portrait-inner">
+                <!-- If you have an image, inject <img src="{{photoDataUrl}}" alt="Portrait of {{name}}" /> -->
+                {{#ifPhoto}}
+                <img src="{{photoDataUrl}}" alt="Portrait of {{name}}" />
+                {{/ifPhoto}}
+
+                {{#ifNoPhoto}}
+                <div class="portrait-placeholder">
+                  <div class="portrait-placeholder-icon">🕊️</div>
+                  <div>Forever in our hearts</div>
+                </div>
+                {{/ifNoPhoto}}
+              </div>
+            </div>
+          </div>
+
+          <div class="text-block">
+            <p class="quote">
+              {{message}}
+            </p>
+            <p class="subtext">
+              This page is a quiet place to pause, remember, and honour a life that touched many hearts.
+            </p>
+          </div>
+        </section>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <div>Candle of remembrance</div>
+          <div class="divider-line"></div>
+        </div>
+
+        <section class="candle-section">
+          <div class="candle-glow">
+            <div class="candle-flame"></div>
+            <div class="candle-base"></div>
+          </div>
+          <div class="candle-caption">
+            A light that continues to shine in the memories of those who loved {{name}}.
+          </div>
+        </section>
+
+        <footer class="footer">
+          <span>Created as a digital place of remembrance.</span>
+          <span class="footer-mark">Returning Hearts</span>
+        </footer>
+      </div>
+    </main>
+  </div>
 </body>
 </html>
