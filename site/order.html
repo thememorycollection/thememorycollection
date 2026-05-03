@@ -1,1 +1,46 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Your Tribute</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <h1>Create Your Tribute</h1>
+
+  <p>Please complete payment first using the link below, then fill in this form using the same email address.</p>
+
+  <a class="button" href="YOUR_STRIPE_PAYMENT_LINK" target="_blank">Pay Now</a>
+
+  <form action="https://formspree.io/f/YOUR_ID" method="POST">
+    <h2>Tribute Details</h2>
+
+    <label>Name of Loved One</label>
+    <input name="name" required>
+
+    <label>Dates (e.g. 1950–2024)</label>
+    <input name="dates">
+
+    <label>Photo URL (you host it yourself)</label>
+    <input name="photoUrl" type="url">
+
+    <label>Tribute Text</label>
+    <textarea name="story" required></textarea>
+
+    <h2>Package</h2>
+    <select name="package" required>
+      <option value="card">Memorial Card</option>
+      <option value="slate">Slate Plaque</option>
+      <option value="frame">Framed Print</option>
+    </select>
+
+    <h2>Your Details</h2>
+    <input name="customerName" placeholder="Your name" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <textarea name="address" placeholder="Shipping address" required></textarea>
+
+    <button type="submit">Submit Tribute</button>
+  </form>
+</body>
+</html>
