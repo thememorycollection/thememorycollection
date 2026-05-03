@@ -1,1 +1,37 @@
 
+body {
+  font-family: Arial, sans-serif;
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #b33a3a;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.product {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 6px;
+}
