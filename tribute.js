@@ -49,123 +49,92 @@ function generateTribute() {
   const name = document.getElementById("nameInput").value;
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
+  const password = document.getelementById("passwordInput").value;
 
-  const tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+  let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null;
+
+  if (password.trim() !== "") {
+    tributeHTML = wrapEncryptedPage(tributeHTML, password);
+
+  }
 
   showPreview(tributeHTML);
 }
 
 // Tribute page template (dark candle-lit)
-function generateTemplate(name, dates, message, photo) {
+function wrapEncryptedPage(html, password) {
+  const encrypted = CryptoJS.AES.encrypt(html, password).toString();
+
   return `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>In Loving Memory of ${name}</title>
+<title>Protected Tribute Page</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
 <style>
   body {
     font-family: system-ui, sans-serif;
-    background: linear-gradient(to bottom, #050509, #151520);
-    color: #f5f5f5;
-    padding: 16px;
-    max-width: 720px;
-    margin: auto;
-  }
-
-  .header-label {
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: #b3b3c2;
-    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    background: #0b0b10;
+    color: #eee;
+    padding: 20px;
     text-align: center;
   }
-
-  h1 {
-    font-family: "Playfair Display", serif;
-    text-align: center;
-    margin: 6px 0;
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
-  }
-
-  .dates {
-    text-align: center;
-    color: #b3b3c2;
-    letter-spacing: 0.16em;
-    font-size: clamp(0.8rem, 2.5vw, 1rem);
-  }
-
-  .portrait {
-    margin: 24px auto;
-    width: min(260px, 70vw);
-    height: auto;
-    aspect-ratio: 3 / 4;
-    border-radius: 999px;
-    overflow: hidden;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.9);
-  }
-
-  .portrait img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .quote {
-    font-size: clamp(0.95rem, 3vw, 1.1rem);
-    line-height: 1.7;
+  input {
+    padding: 12px;
+    width: 80%;
+    max-width: 260px;
     margin-top: 20px;
-    text-align: center;
-    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a22;
+    color: #eee;
   }
-
-  .candle {
-    margin: 40px auto;
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
-    border-radius: 999px;
-    box-shadow: 0 0 25px rgba(245,210,138,0.8);
-    position: relative;
-  }
-
-  .flame {
-    width: 16px;
-    height: 28px;
-    background: linear-gradient(to bottom, #fff, #f5a623 70%, #f08a1a);
-    border-radius: 50%;
-    position: absolute;
-    top: 8px;
-    left: calc(50% - 8px);
-    animation: flicker 3s infinite ease-in-out;
-  }
-
-  @keyframes flicker {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(1px); }
-    100% { transform: translateX(0); }
+  button {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background: #f5d28a;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
   }
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="header-label">In loving memory of</div>
-<h1>${name}</h1>
-<div class="dates">${dates}</div>
+<h2>This tribute page is protected</h2>
+<p>Please enter the password to view it.</p>
 
-<div class="portrait">
-  ${photo ? `<img src="${photo}" alt="Portrait of ${name}">` : ""}
-</div>
+<input id="pw" type="password" placeholder="Password">
+<button onclick="unlock()">Unlock</button>
 
-<div class="quote">“${message}”</div>
+<script>
+  const encrypted = "${encrypted}";
 
-<div class="candle">
-  <div class="flame"></div>
-</div>
+  function unlock() {
+    const pw = document.getElementById('pw').value;
+    try {
+      const bytes = CryptoJS.AES.decrypt(encrypted, pw);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+
+      if (!decrypted) {
+        alert("Incorrect password");
+        return;
+      }
+
+      document.open();
+      document.write(decrypted);
+      document.close();
+    } catch (e) {
+      alert("Incorrect password");
+    }
+  }
+</script>
 
 </body>
 </html>
