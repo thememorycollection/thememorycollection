@@ -85,27 +85,41 @@ function downloadHTML() {
 }
 
 // Generate tribute page HTML
-async function generateTribute() {
+function generateTribute() {
   const name = document.getElementById("nameInput").value;
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
   const password = document.getElementById("passwordInput").value;
 
-  const tributeHTML = generateTemplate(name, dates, message, photoDataUrls);
+  const photos = [];  
+  const files = document.getElementById("photoInput").files;
 
-  // No password → normal tribute
-  if (!password) {
-    showPreview(tributeHTML);
-    return;
-  }
+  const readerPromises = [...files].map(file => {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+  });
 
-  // Encrypt tribute
-  const encrypted = await encryptText(tributeHTML, password);
+  Promise.all(readerPromises).then(results => {
+    const tributeData = JSON.stringify({
+      name,
+      dates,
+      message,
+      photos: results
+    });
 
-  // Build locked page
-  const lockedHTML = generateLockedPage(encrypted);
+    let encrypted;
 
-  showPreview(lockedHTML);
+    if (password.trim() !== "") {
+      encrypted = CryptoJS.AES.encrypt(tributeData, password).toString();
+    } else {
+      encrypted = btoa(tributeData);
+    }
+
+    window.location.href = "preview.html#" + encodeURIComponent(encrypted);
+  });
 }
 
 // Locked tribute page template
