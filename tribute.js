@@ -53,20 +53,7 @@ if (photoInput) {
   window.open(url, "_blank");
 };
 
-    // Create Blob URL for the tribute preview
-    const blob = new Blob([tributeHTML], { type: "text/html" });
-    lastTributeURL = URL.createObjectURL(blob);
-
-    // Now that we have the real URL, regenerate the tribute with correct return URL
-    let tributeWithReturn = tributeHTML.replace("RETURN_PLACEHOLDER", encodeURIComponent(lastTributeURL));
-
-    // Create a new Blob with the corrected return URL
-    const finalBlob = new Blob([tributeWithReturn], { type: "text/html" });
-    lastTributeURL = URL.createObjectURL(finalBlob);
-
-    // Open the tribute preview in a new tab
-    window.open(lastTributeURL, "_blank");
-  };
+    
 
 }); // END DOMContentLoaded
 
