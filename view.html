@@ -24,6 +24,14 @@
   
 </div>
 
+<div id="passwordModal">
+  <div id="passwordBox">
+    <h2>Enter Password</h2>
+    <input id="passwordEntry" type="password" placeholder="Password">
+    <button onclick="unlock()">Unlock</button>
+  </div>
+</div>
+
 <script>
 const encrypted = decodeURIComponent(window.location.hash.substring(1));
 
