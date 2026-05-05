@@ -1,15 +1,17 @@
-let photoDataUrl = "";
+let photoDataUrls = [];
 
-// Handle photo upload (browser-only)
+// Handle multi‑photo upload (browser‑only)
 document.getElementById("photoInput").addEventListener("change", function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  const files = event.target.files;
+  photoDataUrls = []; // reset
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    photoDataUrl = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  if (!files.length) return;
+
+  [...files].forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => photoDataUrls.push(e.target.result);
+    reader.readAsDataURL(file);
+  });
 });
 
 // Switch to preview mode
@@ -50,13 +52,25 @@ function generateTribute() {
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
 
-  const tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+  const tributeHTML = generateTemplate(name, dates, message, photoDataUrls);
 
   showPreview(tributeHTML);
 }
 
-// Tribute page template (dark candle-lit)
-function generateTemplate(name, dates, message, photo) {
+// Tribute page template (dark candle-lit) with slideshow
+function generateTemplate(name, dates, message, photos) {
+
+  // Build slideshow HTML
+  let slideshowHTML = "";
+  if (photos && photos.length > 0) {
+    photos.forEach((src, i) => {
+      slideshowHTML += `
+        <div class="slide ${i === 0 ? "active" : ""}">
+          <img src="${src}" alt="Photo of ${name}">
+        </div>`;
+    });
+  }
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -92,19 +106,36 @@ function generateTemplate(name, dates, message, photo) {
     color: #b3b3c2;
     letter-spacing: 0.16em;
   }
-  .portrait {
-    margin: 30px auto;
+
+  /* Slideshow container */
+  .slideshow {
+    position: relative;
     width: 260px;
     height: 340px;
+    margin: 30px auto;
     border-radius: 999px;
     overflow: hidden;
     box-shadow: 0 18px 40px rgba(0,0,0,0.9);
   }
-  .portrait img {
+
+  .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  .slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+
+  .slide.active {
+    opacity: 1;
+  }
+
   .quote {
     font-size: 1rem;
     line-height: 1.7;
@@ -144,15 +175,32 @@ function generateTemplate(name, dates, message, photo) {
 <h1>${name}</h1>
 <div class="dates">${dates}</div>
 
-<div class="portrait">
-  ${photo ? `<img src="${photo}" alt="Portrait of ${name}">` : ""}
+${photos.length > 0 ? `
+<div class="slideshow">
+  ${slideshowHTML}
 </div>
+` : ""}
 
 <div class="quote">“${message}”</div>
 
 <div class="candle">
   <div class="flame"></div>
 </div>
+
+<script>
+  let index = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  function showSlide() {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[index].classList.add('active');
+    index = (index + 1) % slides.length;
+  }
+
+  if (slides.length > 1) {
+    setInterval(showSlide, 4000);
+  }
+</script>
 
 </body>
 </html>
