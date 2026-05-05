@@ -3,7 +3,44 @@
 // -----------------------------------------------------
 
 function generateTribute() {
-  // your generate code here
+    const name = document.getElementById("nameInput").value.trim();
+    const dates = document.getElementById("datesInput").value.trim();
+    const message = document.getElementById("messageInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+
+    const files = document.getElementById("photoInput").files;
+    const readers = [];
+
+    // Convert uploaded photos to base64
+    for (let i = 0; i < files.length; i++) {
+        readers.push(new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsDataURL(files[i]);
+        }));
+    }
+
+    Promise.all(readers).then(photoDataUrls => {
+        const tributeObj = {
+            name,
+            dates,
+            message,
+            photos: photoDataUrls
+        };
+
+        const json = JSON.stringify(tributeObj);
+        let payload;
+
+        // Encrypt if password provided
+        if (password.trim() !== "") {
+            payload = CryptoJS.AES.encrypt(json, password).toString();
+        } else {
+            payload = btoa(json);
+        }
+
+        const encoded = encodeURIComponent(payload);
+        window.location.href = "preview.html#" + encoded;
+    });
 }
 
 
@@ -13,42 +50,59 @@ function generateTribute() {
 // -----------------------------------------------------
 
 function initPreviewPage() {
-  const hash = window.location.hash.substring(1);
-  const encrypted = decodeURIComponent(hash);
-  let data = null;
+    const hash = window.location.hash.substring(1);
+    const encrypted = decodeURIComponent(hash);
+    let data = null;
 
-  // Try no-password first (base64)
-  try {
-    const json = atob(encrypted);
-    data = JSON.parse(json);
-    document.getElementById("passwordModal").classList.remove("show");
-    showTribute(data);
-    return;
-  } catch (e) {
-    // fall through to password flow
-  }
-
-  // Show modal if base64 failed
-  document.getElementById("passwordModal").classList.add("show");
-
-  window.unlock = function () {
-    const password = document.getElementById("passwordEntry").value;
-    const bytes = CryptoJS.AES.decrypt(encrypted, password);
-    const text = bytes.toString(CryptoJS.enc.Utf8);
-
-    if (!text) {
-      alert("Incorrect password");
-      return;
-    }
-
+    // Try base64 (no password)
     try {
-      data = JSON.parse(text);
-      document.getElementById("passwordModal").classList.remove("show");
-      showTribute(data);
-    } catch {
-      alert("Incorrect password");
+        const json = atob(encrypted);
+        data = JSON.parse(json);
+        document.getElementById("passwordModal").classList.remove("show");
+        showTribute(data);
+        return;
+    } catch (e) {
+        // Not base64 → must be AES
     }
-  };
+
+    // Show modal
+    document.getElementById("passwordModal").classList.add("show");
+
+    window.unlock = function () {
+        const password = document.getElementById("passwordEntry").value;
+
+        const bytes = CryptoJS.AES.decrypt(encrypted, password);
+        const text = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!text) {
+            alert("Incorrect password");
+            return;
+        }
+
+        try {
+            data = JSON.parse(text);
+            document.getElementById("passwordModal").classList.remove("show");
+            showTribute(data);
+        } catch {
+            alert("Incorrect password");
+        }
+    };
+
+    // Send-to-seller button
+    window.sendToSeller = function () {
+        const link = window.location.origin +
+            window.location.pathname.replace("preview.html", "view.html") +
+            "#" + encodeURIComponent(encrypted);
+
+        const subject = encodeURIComponent("New Tribute Page – TheMemoryCollection");
+        const body = encodeURIComponent(
+            "A new tribute page has been created.\n\n" +
+            "Link:\n" + link + "\n\n" +
+            "(Use this link to generate the QR code for the keepsake.)"
+        );
+
+        window.location.href = "mailto:you@example.com?subject=" + subject + "&body=" + body;
+    };
 }
 
 
@@ -58,40 +112,41 @@ function initPreviewPage() {
 // -----------------------------------------------------
 
 function initViewPage() {
-  const hash = window.location.hash.substring(1);
-  const encrypted = decodeURIComponent(hash);
-  let data = null;
+    const hash = window.location.hash.substring(1);
+    const encrypted = decodeURIComponent(hash);
+    let data = null;
 
-  // Try no-password first (base64)
-  try {
-    const json = atob(encrypted);
-    data = JSON.parse(json);
-    document.getElementById("passwordModal").classList.remove("show");
-    showTribute(data);
-    return;
-  } catch (e) {}
-
-  // Show modal
-  document.getElementById("passwordModal").classList.add("show");
-
-  window.unlock = function () {
-    const password = document.getElementById("passwordEntry").value;
-    const bytes = CryptoJS.AES.decrypt(encrypted, password);
-    const text = bytes.toString(CryptoJS.enc.Utf8);
-
-    if (!text) {
-      alert("Incorrect password");
-      return;
-    }
-
+    // Try base64 (no password)
     try {
-      data = JSON.parse(text);
-      document.getElementById("passwordModal").classList.remove("show");
-      showTribute(data);
-    } catch {
-      alert("Incorrect password");
-    }
-  };
+        const json = atob(encrypted);
+        data = JSON.parse(json);
+        document.getElementById("passwordModal").classList.remove("show");
+        showTribute(data);
+        return;
+    } catch (e) {}
+
+    // Show modal
+    document.getElementById("passwordModal").classList.add("show");
+
+    window.unlock = function () {
+        const password = document.getElementById("passwordEntry").value;
+
+        const bytes = CryptoJS.AES.decrypt(encrypted, password);
+        const text = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!text) {
+            alert("Incorrect password");
+            return;
+        }
+
+        try {
+            data = JSON.parse(text);
+            document.getElementById("passwordModal").classList.remove("show");
+            showTribute(data);
+        } catch {
+            alert("Incorrect password");
+        }
+    };
 }
 
 
@@ -101,16 +156,17 @@ function initViewPage() {
 // -----------------------------------------------------
 
 function showTribute(data) {
-  document.getElementById("name").textContent = data.name || "";
-  document.getElementById("dates").textContent = data.dates || "";
-  document.getElementById("message").textContent = data.message || "";
+    document.getElementById("name").textContent = data.name || "";
+    document.getElementById("dates").textContent = data.dates || "";
+    document.getElementById("message").textContent = data.message || "";
 
-  const container = document.getElementById("photos");
-  container.innerHTML = "";
-  (data.photos || []).forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    img.className = "tribute-photo";
-    container.appendChild(img);
-  });
+    const container = document.getElementById("photos");
+    container.innerHTML = "";
+
+    (data.photos || []).forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "tribute-photo";
+        container.appendChild(img);
+    });
 }
