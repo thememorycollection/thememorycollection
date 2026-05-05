@@ -1,74 +1,66 @@
+/* ---------------------------------------------------------
+   GLOBAL PAGE STYLING
+--------------------------------------------------------- */
 body {
-    font-family: system-ui, sans-serif;
-    background: #0b0b10;
-    color: #eee;
-    padding: 16px;
-    max-width: 720px;
-    margin: auto;
-  }
-
-  h1 {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: #fafafa;
+    color: #333;
     text-align: center;
-    margin-bottom: 20px;
-    color: #f5d28a;
-    font-size: clamp(1.4rem, 4vw, 2rem);
-  }
+}
 
-  label {
+#tributeWrapper {
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    margin: 10px 0;
+}
+
+p {
+    white-space: pre-wrap;
+    line-height: 1.5;
+    margin: 20px 0;
+}
+
+/* ---------------------------------------------------------
+   SLIDESHOW (required for images to show)
+--------------------------------------------------------- */
+#slideshow, #photos {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;
+    overflow: hidden;
+    min-height: 200px; /* prevents collapsing before images load */
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: auto;
     display: block;
-    margin-top: 16px;
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 14px;
-    margin-top: 6px;
     border-radius: 8px;
-    border: 1px solid #333;
-    background: #1a1a22;
-    color: #eee;
-    font-size: 1rem;
-  }
+}
 
-  button {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background: #f5d28a;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    width: 100%;
-    font-size: 1rem;
-  }
-
-  #previewSection {
-    display: none;
-    margin-top: 20px;
-  }
-
-  iframe {
-    width: 100%;
-    height: 75vh;
-    border: 1px solid #333;
-    border-radius: 8px;
-    background: #000;
-  }
-
-  @media (max-width: 480px) {
-    input, textarea {
-      font-size: 0.95rem;
-    }
-    button {
-      font-size: 0.95rem;
-      padding: 12px;
-    }
-  }
-
-/* Fullscreen modal overlay */
+/* ---------------------------------------------------------
+   PASSWORD MODAL (mobile‑safe)
+--------------------------------------------------------- */
 #passwordModal {
     position: fixed;
     top: 0;
@@ -85,13 +77,11 @@ body {
     transition: opacity 0.3s ease;
 }
 
-/* Show state */
 #passwordModal.show {
     visibility: visible;
     opacity: 1;
 }
 
-/* Modal box */
 #passwordBox {
     background: #fff;
     padding: 24px;
@@ -102,7 +92,6 @@ body {
     text-align: center;
 }
 
-/* Input styling */
 #passwordBox input {
     width: 100%;
     padding: 12px;
@@ -112,7 +101,6 @@ body {
     border: 1px solid #ccc;
 }
 
-/* Button styling */
 #passwordBox button {
     margin-top: 16px;
     padding: 12px 20px;
@@ -124,37 +112,20 @@ body {
     width: 100%;
 }
 
-.slideshow {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    height: 60vh;
-    margin: 2rem auto;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+/* ---------------------------------------------------------
+   BUTTONS
+--------------------------------------------------------- */
+button {
+    background: #333;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
 }
 
-.slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.slide.active {
-    opacity: 1;
-}
-
-.slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 16px;
+button:hover {
+    background: #555;
 }
