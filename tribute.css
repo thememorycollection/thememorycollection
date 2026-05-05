@@ -1,41 +1,140 @@
-/* ---------------------------------------------------------
-   GLOBAL PAGE STYLING
---------------------------------------------------------- */
 body {
-    margin: 0;
-    padding: 0;
-    font-family: "Helvetica Neue", Arial, sans-serif;
-    background: #fafafa;
-    color: #333;
+    font-family: system-ui, sans-serif;
+    background: #0b0b10;
+    color: #eee;
+    padding: 16px;
+    max-width: 720px;
+    margin: auto;
+  }
+
+  h1 {
     text-align: center;
+    margin-bottom: 20px;
+    color: #f5d28a;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+  }
+
+  label {
+    display: block;
+    margin-top: 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 14px;
+    margin-top: 6px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #1a1a22;
+    color: #eee;
+    font-size: 1rem;
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: #f5d28a;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  #previewSection {
+    display: none;
+    margin-top: 20px;
+  }
+
+  iframe {
+    width: 100%;
+    height: 75vh;
+    border: 1px solid #333;
+    border-radius: 8px;
+    background: #000;
+  }
+
+  @media (max-width: 480px) {
+    input, textarea {
+      font-size: 0.95rem;
+    }
+    button {
+      font-size: 0.95rem;
+      padding: 12px;
+    }
+  }
+/* Soft modal overlay */
+#passwordModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.45); /* soft fade */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
-#tributeWrapper {
-    padding: 20px;
-    max-width: 700px;
-    margin: 0 auto;
+/* Modal content box */
+#passwordBox {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 14px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-h1, h2 {
-    margin: 10px 0;
+#passwordBox h2 {
+    margin-top: 0;
+    font-weight: 600;
+    color: #333;
 }
 
-p {
-    white-space: pre-wrap;
-    line-height: 1.5;
-    margin: 20px 0;
+#passwordBox input {
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-/* ---------------------------------------------------------
-   SLIDESHOW (required for images to show)
---------------------------------------------------------- */
-#slideshow, #photos {
+#passwordBox button {
+    margin-top: 1rem;
+    padding: 0.7rem 1.2rem;
+    border: none;
+    background: #444;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#passwordModal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+.slideshow {
     position: relative;
     width: 100%;
-    max-width: 700px;
-    margin: 20px auto;
+    max-width: 600px;
+    height: 60vh;
+    margin: 2rem auto;
+    border-radius: 16px;
     overflow: hidden;
-    min-height: 200px; /* prevents collapsing before images load */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .slide {
@@ -43,8 +142,12 @@ p {
     top: 0;
     left: 0;
     width: 100%;
+    height: 100%;
     opacity: 0;
-    transition: opacity 1.2s ease;
+    transition: opacity 1.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .slide.active {
@@ -53,79 +156,7 @@ p {
 
 .slide img {
     width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 8px;
-}
-
-/* ---------------------------------------------------------
-   PASSWORD MODAL (mobile‑safe)
---------------------------------------------------------- */
-#passwordModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.65);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99999;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#passwordModal.show {
-    visibility: visible;
-    opacity: 1;
-}
-
-#passwordBox {
-    background: #fff;
-    padding: 24px;
-    border-radius: 14px;
-    width: 90%;
-    max-width: 380px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    text-align: center;
-}
-
-#passwordBox input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-#passwordBox button {
-    margin-top: 16px;
-    padding: 12px 20px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    background: #333;
-    color: white;
-    width: 100%;
-}
-
-/* ---------------------------------------------------------
-   BUTTONS
---------------------------------------------------------- */
-button {
-    background: #333;
-    color: #fff;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-button:hover {
-    background: #555;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 16px;
 }
