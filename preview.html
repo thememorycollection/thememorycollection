@@ -4,17 +4,16 @@
   <meta charset="UTF-8">
   <title>Preview Tribute – TheMemoryCollection</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="stylesheet" href="tribute.css">
 
-  <!-- CryptoJS must load BEFORE tribute.js -->
+  <!-- Load CryptoJS BEFORE tribute.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="tribute.js"></script>
 </head>
 
 <body>
 
-<!-- PASSWORD MODAL -->
+<!-- Soft password modal overlay -->
 <div id="passwordModal">
   <div id="passwordBox">
     <h2>Enter Password</h2>
@@ -23,16 +22,13 @@
   </div>
 </div>
 
-<!-- TRIBUTE CONTENT -->
+<!-- Tribute content -->
 <div id="tributeWrapper">
   <h1 id="name"></h1>
   <h2 id="dates"></h2>
   <p id="message"></p>
+  <div id="photos"></div>
 
-  <!-- SLIDESHOW CONTAINER (required for images to show) -->
-  <div id="slideshow"></div>
-
-  <!-- SEND TO SELLER BUTTON -->
   <button id="sendButton" onclick="sendToSeller()">Send to Seller</button>
 </div>
 
