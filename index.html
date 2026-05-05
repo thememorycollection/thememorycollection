@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TheMemoryCollection – Tribute Page Creator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="tribute.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-</head>
+<meta charset="UTF-8">
+<title>TheMemoryCollection – Tribute Page Creator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="tribute.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
+</head>
 <body>
 
 <h1>TheMemoryCollection – Tribute Page Creator</h1>
 
 <div id="formSection">
 
-  <label>Name of Loved One</label>
-  <input id="nameInput" placeholder="e.g., Doris Day">
+<label>Name of Loved One</label>
+<input id="nameInput" placeholder="e.g., Duncan McGregor">
 
-  <label>Dates</label>
-  <input id="datesInput" placeholder="e.g., 1948 – 2026">
+<label>Dates</label>
+<input id="datesInput" placeholder="e.g., 1948 – 2026">
 
-  <label>Message</label>
-  <textarea id="messageInput" rows="4"></textarea>
+<label>Message</label>
+<textarea id="messageInput" rows="4" placeholder="A short message or tribute..."></textarea>
 
-  <label>Photo (optional)</label>
-  <input type="file" id="photoInput" accept="image/*">
+<label>Photo (optional)</label>
+<input type="file" id="photoInput" accept="image/*">
 
-  <label>Password (optional)</label>
-  <input id="passwordInput" type="password" placeholder="Choose a password">
+<label>Password (optional)</label>
+<input id="passwordInput" type="password" placeholder="Choose a password">
 
-  <button onclick="generateTribute()">Generate Tribute Page</button>
+<button onclick="generateTribute()">Generate Tribute Page</button>
 </div>
+  
 
-<div id="previewSection" style="display:none;">
+<!-- PREVIEW SECTION -->
+<div id="previewSection">
   <h2>Preview of Tribute Page</h2>
   <iframe id="previewFrame"></iframe>
 
   <button onclick="goBack()">Back to Form</button>
-  <button onclick="downloadHTML()">Buy Now</button>
 </div>
 
-<script src="js/tribute.js"></script>
+
+<script src="tribute.js"></script>
 </body>
+
 </html>
