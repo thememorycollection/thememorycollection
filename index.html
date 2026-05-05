@@ -43,7 +43,84 @@
   <button onclick="downloadHTML()">Buy Now</button>
 </div>
 
+function wrapEncryptedPage(html, password) {
+  const encrypted = CryptoJS.AES.encrypt(html, password).toString();
 
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Protected Tribute Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #0b0b10;
+    color: #eee;
+    padding: 20px;
+    text-align: center;
+  }
+  input {
+    padding: 12px;
+    width: 80%;
+    max-width: 260px;
+    margin-top: 20px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background: #1a1a22;
+    color: #eee;
+  }
+  button {
+    margin-top: 20px;
+    padding: 12px 18px;
+    background: #f5d28a;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+</style>
+
+</head>
+<body>
+
+<h2>This tribute page is protected</h2>
+<p>Please enter the password to view it.</p>
+
+<input id="pw" type="password" placeholder="Password">
+<button onclick="unlock()">Unlock</button>
+
+<script>
+  const encrypted = "${encrypted}";
+
+  function unlock() {
+    const pw = document.getElementById('pw').value;
+    try {
+      const bytes = CryptoJS.AES.decrypt(encrypted, pw);
+      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+
+      if (!decrypted) {
+        alert("Incorrect password");
+        return;
+      }
+
+      document.open();
+      document.write(decrypted);
+      document.close();
+    } catch (e) {
+      alert("Incorrect password");
+    }
+  }
+</script>
+
+</body>
+</html>
+  `;
+}
 
 // Tribute page template (dark candle-lit)
 function generateTemplate(name, dates, message, photo) {
