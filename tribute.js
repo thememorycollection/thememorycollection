@@ -29,6 +29,12 @@ function goBack() {
   document.getElementById("formSection").style.display = "block";
 }
 
+// Go back to form
+function backtotribute() {
+  document.getElementById("slideshow").style.display = "none";
+  document.getElementById("tribute").style.display = "block";
+}
+
 // Download tribute page
 function downloadHTML() {
   if (!window.generatedHTML) return alert("Generate the page first!");
@@ -254,7 +260,7 @@ function generateTemplate(name, dates, message, photo) {
      ">
      View Tribute Slideshow
   </a>
-  <button onclick="goBack()">Back to Tribute</button>
+  <button onclick="backtotribute()">Back to Tribute</button>
 </div>
 
 </body>
