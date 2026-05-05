@@ -176,7 +176,11 @@ function generateTemplate(name, dates, message, photo) {
    View Tribute Slideshow
 </a>
 </div>
-
+<script>
+  function goToSlideshow() {
+    location.href = 'slideshow.html?return=' + encodeURIComponent(location.href);
+  }
+</script>
 </body>
 </html>
   `;
