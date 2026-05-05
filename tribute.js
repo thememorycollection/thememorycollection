@@ -13,16 +13,14 @@ document.getElementById("photoInput").addEventListener("change", function(event)
 });
 
 // Switch to preview mode
-function showPreview(html) {
-  const blob = new Blob([html], { type: "text/html" });
-  const tributeURL = URL.createObjectURL(blob);
+<!-- PREVIEW SECTION -->
+<div id="previewSection">
+  <h2>Preview of Tribute Page</h2>
+  <iframe id="previewFrame"></iframe>
 
-  // Save the URL so the slideshow can return to it
-  window.lastTributeURL = tributeURL;
-
-  // Open the tribute page in a new tab
-  window.open(tributeURL, "_blank");
-}
+  <button onclick="goBack()">Back to Form</button>
+  <button onclick="downloadHTML()">Buy Now</button>
+</div>
 
 // Go back to form
 function goBack() {
@@ -245,7 +243,7 @@ function generateTemplate(name, dates, message, photo) {
 </div>
 
 <div style="text-align:center; margin-top:30px;">
-  <a href="slideshow.html?return=${window.lastTributeURL}"
+  <a href="slideshow.html?return={{RETURN_URL}}"
    style="
      display:inline-block;
      padding:12px 20px;
