@@ -43,6 +43,10 @@
   <button onclick="downloadHTML()">Buy Now</button>
 </div>
 
+<script>
+function wrapEncryptedPage(html, password) {
+  const encrypted = CryptoJS.AES.encrypt(html, password).toString();
+  </script>
 
 <script src="js/script.js"></script>
 </body>
