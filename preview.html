@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  
   <meta charset="UTF-8">
   <title>Preview Tribute</title>
   <link rel="stylesheet" href="tribute.css">
@@ -33,50 +33,12 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="tribute.js"></script>
 <script>
-const encrypted = decodeURIComponent(window.location.hash.substring(1));
-let decrypted;
-
-// Try base64 first (no password)
-try {
-    decrypted = JSON.parse(atob(encrypted));
-    showTribute(decrypted);
-} catch {
-    // If base64 fails → encrypted with password
-    document.getElementById("passwordModal").classList.add("show");
-}
-
-function unlock() {
-    const password = document.getElementById("passwordEntry").value;
-
-    try {
-        const bytes = CryptoJS.AES.decrypt(encrypted, password);
-        const text = bytes.toString(CryptoJS.enc.Utf8);
-
-        if (!text) throw new Error("Bad password");
-
-        decrypted = JSON.parse(text);
-        document.getElementById("passwordModal").classList.remove("show");
-        showTribute(decrypted);
-
-    } catch {
-        alert("Incorrect password");
-    }
-}
-
-function showTribute(data) {
-    document.getElementById("name").textContent = data.name;
-    document.getElementById("dates").textContent = data.dates;
-    document.getElementById("message").textContent = data.message;
-
-    const container = document.getElementById("photos");
-    data.photos.forEach(src => {
-        const img = document.createElement("img");
-        img.src = src;
-        container.appendChild(img);
-    });
-}
+  initTributePage(true);
 </script>
+
 
 </body>
 </html>
