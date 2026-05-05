@@ -52,5 +52,18 @@
   });
 </script>
 
+<script>
+  const params = new URLSearchParams(location.search);
+  const tributeURL = params.get("return");
+
+  document.getElementById("backToTribute").addEventListener("click", () => {
+    if (tributeURL) {
+      window.location.href = tributeURL;
+    } else {
+      history.back();
+    }
+  });
+</script>
+
 </body>
 </html>
