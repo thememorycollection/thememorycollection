@@ -3,20 +3,30 @@ document.addEventListener("DOMContentLoaded", () => {
   let photoDataUrl = "";
   let lastTributeURL = ""; // Stores the Blob URL for preview
 
-  // Handle photo upload
   const photoInput = document.getElementById("photoInput");
-  if (photoInput) {
-    photoInput.addEventListener("change", function(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+if (photoInput) {
+  photoInput.addEventListener("change", function(event) {
+    const files = Array.from(photoInput.files);
+    const readers = [];
 
+    window.slideshowImages = [];
+
+    files.forEach(file => {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        photoDataUrl = e.target.result;
-      };
-      reader.readAsDataURL(file);
+      readers.push(new Promise(resolve => {
+        reader.onload = e => {
+          window.slideshowImages.push(e.target.result);
+          resolve();
+        };
+        reader.readAsDataURL(file);
+      }));
     });
-  }
+
+    Promise.all(readers).then(() => {
+      localStorage.setItem("slideshowImages", JSON.stringify(window.slideshowImages));
+    });
+  });
+}
 
   // Go back to form
   window.goBack = function () {
