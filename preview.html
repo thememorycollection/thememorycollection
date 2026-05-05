@@ -34,48 +34,46 @@
 
 <script>
 const encrypted = decodeURIComponent(window.location.hash.substring(1));
-
 let decrypted;
 
+// Try base64 first (no password)
 try {
-  // Try base64 first (no password)
-  decrypted = JSON.parse(atob(encrypted));
-  showPreview(decrypted);
+    decrypted = JSON.parse(atob(encrypted));
+    showTribute(decrypted);
 } catch {
-  // If base64 fails → password required
-  document.getElementById("passwordPrompt").style.display = "block";
+    // If base64 fails → encrypted with password
+    document.getElementById("passwordModal").classList.add("show");
 }
 
 function unlock() {
-  const password = document.getElementById("passwordEntry").value;
-  try {
-    const bytes = CryptoJS.AES.decrypt(encrypted, password);
-    const text = bytes.toString(CryptoJS.enc.Utf8);
-    decrypted = JSON.parse(text);
-    showPreview(decrypted);
-  } catch {
-    alert("Incorrect password");
-  }
+    const password = document.getElementById("passwordEntry").value;
+
+    try {
+        const bytes = CryptoJS.AES.decrypt(encrypted, password);
+        const text = bytes.toString(CryptoJS.enc.Utf8);
+
+        if (!text) throw new Error("Bad password");
+
+        decrypted = JSON.parse(text);
+        document.getElementById("passwordModal").classList.remove("show");
+        showTribute(decrypted);
+
+    } catch {
+        alert("Incorrect password");
+    }
 }
 
-function showPreview(data) {
-  document.getElementById("passwordPrompt").style.display = "none";
-  document.getElementById("previewContent").style.display = "block";
+function showTribute(data) {
+    document.getElementById("name").textContent = data.name;
+    document.getElementById("dates").textContent = data.dates;
+    document.getElementById("message").textContent = data.message;
 
-  document.getElementById("name").textContent = data.name;
-  document.getElementById("dates").textContent = data.dates;
-  document.getElementById("message").textContent = data.message;
-
-  const container = document.getElementById("photos");
-  data.photos.forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    container.appendChild(img);
-  });
-}
-
-function sendToSeller() {
-  window.location.href = "mailto:youremail@example.com";
+    const container = document.getElementById("photos");
+    data.photos.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        container.appendChild(img);
+    });
 }
 </script>
 
