@@ -240,6 +240,22 @@ function generateTemplate(name, dates, message, photo) {
   <div class="flame"></div>
 </div>
 
+<div style="text-align:center; margin-top:30px;">
+  <a href="slideshow.html" 
+     style="
+       display:inline-block;
+       padding:12px 20px;
+       background:#f5d28a;
+       color:#000;
+       text-decoration:none;
+       border-radius:8px;
+       font-weight:600;
+       font-size:1rem;
+     ">
+     View Tribute Slideshow
+  </a>
+</div>
+
 </body>
 </html>
   `;
