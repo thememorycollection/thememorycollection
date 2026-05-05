@@ -254,6 +254,7 @@ function generateTemplate(name, dates, message, photo) {
      ">
      View Tribute Slideshow
   </a>
+  <button onclick="goBack()">Back to Tribute</button>
 </div>
 
 </body>
