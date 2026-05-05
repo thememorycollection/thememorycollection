@@ -49,97 +49,13 @@ function generateTribute() {
   const name = document.getElementById("nameInput").value;
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
-  const password = document.getElementById("passwordInput").value;
 
-  let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
-
-  if (password.trim() !== "") {
-    tributeHTML = wrapEncryptedPage(tributeHTML, password);
-
-  }
+  const tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
 
   showPreview(tributeHTML);
 }
 
 // Tribute page template (dark candle-lit)
-function wrapEncryptedPage(html, password) {
-  const encrypted = CryptoJS.AES.encrypt(html, password).toString();
-
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Protected Tribute Page</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #0b0b10;
-    color: #eee;
-    padding: 20px;
-    text-align: center;
-  }
-  input {
-    padding: 12px;
-    width: 80%;
-    max-width: 260px;
-    margin-top: 20px;
-    border-radius: 6px;
-    border: 1px solid #333;
-    background: #1a1a22;
-    color: #eee;
-  }
-  button {
-    margin-top: 20px;
-    padding: 12px 18px;
-    background: #f5d28a;
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-</style>
-
-</head>
-<body>
-
-<h2>This tribute page is protected</h2>
-<p>Please enter the password to view it.</p>
-
-<input id="pw" type="password" placeholder="Password">
-<button onclick="unlock()">Unlock</button>
-
-<script>
-  const encrypted = "${encrypted}";
-
-  function unlock() {
-    const pw = document.getElementById('pw').value;
-    try {
-      const bytes = CryptoJS.AES.decrypt(encrypted, pw);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-
-      if (!decrypted) {
-        alert("Incorrect password");
-        return;
-      }
-
-      document.open();
-      document.write(decrypted);
-      document.close();
-    } catch (e) {
-      alert("Incorrect password");
-    }
-  }
-</script>
-
-</body>
-</html>
-  `;
-}
 function generateTemplate(name, dates, message, photo) {
   return `
 <!DOCTYPE html>
@@ -155,65 +71,78 @@ function generateTemplate(name, dates, message, photo) {
     font-family: system-ui, sans-serif;
     background: linear-gradient(to bottom, #050509, #151520);
     color: #f5f5f5;
-    padding: 20px;
+    padding: 16px;
     max-width: 720px;
     margin: auto;
   }
+
   .header-label {
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: #b3b3c2;
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     text-align: center;
   }
+
   h1 {
     font-family: "Playfair Display", serif;
     text-align: center;
     margin: 6px 0;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
   }
+
   .dates {
     text-align: center;
     color: #b3b3c2;
     letter-spacing: 0.16em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
   }
+
   .portrait {
-    margin: 30px auto;
-    width: 260px;
-    height: 340px;
+    margin: 24px auto;
+    width: min(260px, 70vw);
+    height: auto;
+    aspect-ratio: 3 / 4;
     border-radius: 999px;
     overflow: hidden;
     box-shadow: 0 18px 40px rgba(0,0,0,0.9);
   }
+
   .portrait img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+
   .quote {
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
     line-height: 1.7;
     margin-top: 20px;
     text-align: center;
+    padding: 0 10px;
   }
+
   .candle {
     margin: 40px auto;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
     border-radius: 999px;
     box-shadow: 0 0 25px rgba(245,210,138,0.8);
     position: relative;
   }
+
   .flame {
-    width: 18px;
-    height: 32px;
+    width: 16px;
+    height: 28px;
     background: linear-gradient(to bottom, #fff, #f5a623 70%, #f08a1a);
     border-radius: 50%;
     position: absolute;
-    top: 10px;
-    left: 31px;
+    top: 8px;
+    left: calc(50% - 8px);
     animation: flicker 3s infinite ease-in-out;
   }
+
   @keyframes flicker {
     0% { transform: translateX(0); }
     50% { transform: translateX(1px); }
