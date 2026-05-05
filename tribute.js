@@ -14,13 +14,14 @@ document.getElementById("photoInput").addEventListener("change", function(event)
 
 // Switch to preview mode
 function showPreview(html) {
-  const frame = document.getElementById("previewFrame");
-  frame.srcdoc = html;
+  const blob = new Blob([html], { type: "text/html" });
+  const tributeURL = URL.createObjectURL(blob);
 
-  document.getElementById("formSection").style.display = "none";
-  document.getElementById("previewSection").style.display = "block";
+  // Save the URL so the slideshow can return to it
+  window.lastTributeURL = tributeURL;
 
-  window.generatedHTML = html;
+  // Open the tribute page in a new tab
+  window.open(tributeURL, "_blank");
 }
 
 // Go back to form
