@@ -160,7 +160,10 @@ function showTribute(data) {
     document.getElementById("dates").textContent = data.dates || "";
     document.getElementById("message").textContent = data.message || "";
 
-    const slideshow = document.getElementById("slideshow");
+    // Support both #slideshow (new) and #photos (old) to avoid crashes
+    const slideshow = document.getElementById("slideshow") || document.getElementById("photos");
+    if (!slideshow) return;
+
     slideshow.innerHTML = "";
 
     (data.photos || []).forEach((src, index) => {
@@ -177,13 +180,13 @@ function showTribute(data) {
 
     // Auto-play slideshow
     let current = 0;
-    const slides = document.querySelectorAll(".slide");
+    const slides = slideshow.querySelectorAll(".slide");
 
     if (slides.length > 1) {
         setInterval(() => {
             slides[current].classList.remove("active");
             current = (current + 1) % slides.length;
             slides[current].classList.add("active");
-        }, 5000); // 5 seconds per slide
+        }, 5000);
     }
 }
