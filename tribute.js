@@ -54,6 +54,7 @@ function generateTribute() {
   const password = document.getElementById("passwordInput").value;
 
   let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+  tributeHTML = tributeHTML.replace("{{RETURN_URL}}", window.lastTributeURL);
 
   if (password.trim() !== "") {
     tributeHTML = wrapEncryptedPage(tributeHTML, password);
@@ -244,7 +245,7 @@ function generateTemplate(name, dates, message, photo) {
 </div>
 
 <div style="text-align:center; margin-top:30px;">
-  <a href="slideshow.html?return={{RETURN_URL}}"
+  <a href="slideshow.html?return=${window.lastTributeURL}"
    style="
      display:inline-block;
      padding:12px 20px;
