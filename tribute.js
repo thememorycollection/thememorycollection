@@ -177,7 +177,6 @@ function generateLockedPage(encrypted) {
     box-shadow: 0 0 25px rgba(245,166,35,0.7);
   }
 
-  /* Candle glow element for consistency */
   .candle-glow {
     width: 90px;
     height: 90px;
@@ -221,7 +220,38 @@ function generateLockedPage(encrypted) {
           name: "PBKDF2",
           salt: enc.encode("returning-hearts-salt"),
           iterations: 120000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
 
+      const iv = new Uint8Array(encrypted.iv);
+      const data = new Uint8Array(encrypted.data);
+
+      const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv },
+        key,
+        data
+      );
+
+      const html = new TextDecoder().decode(decrypted);
+      document.open();
+      document.write(html);
+      document.close();
+
+    } catch (e) {
+      alert("Incorrect password");
+    }
+  }
+</script>
+
+</body>
+</html>
+  `;
+}
 
 // Tribute page template (dark candle-lit) with slideshow
 function generateTemplate(name, dates, message, photos) {
@@ -273,7 +303,6 @@ function generateTemplate(name, dates, message, photos) {
     letter-spacing: 0.16em;
   }
 
-  /* Slideshow container */
   .slideshow {
     position: relative;
     width: 260px;
