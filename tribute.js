@@ -150,21 +150,7 @@ function generateTemplate(name, dates, message, photo) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 
-<div style="text-align:center; margin-top:30px;">
-  <a href="slideshow.html" 
-     style="
-       display:inline-block;
-       padding:12px 20px;
-       background:#f5d28a;
-       color:#000;
-       text-decoration:none;
-       border-radius:8px;
-       font-weight:600;
-       font-size:1rem;
-     ">
-     View Tribute Slideshow
-  </a>
-</div>
+
 
 <style>
   body {
