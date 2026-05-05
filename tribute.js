@@ -1,103 +1,47 @@
-const formSection = document.getElementById("formSection");
-const previewSection = document.getElementById("previewSection");
-const previewFrame = document.getElementById("previewFrame");
 
-let lastTributeHTML = "";
+let photoDataUrl = "";
 
-// Read image as data URL
-function readPhotoFile(file) {
-  return new Promise((resolve) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.readAsDataURL(file);
-  });
+document.getElementById("photoInput").addEventListener("change", function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    photoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function generateTribute() {
+  const name = document.getElementById("nameInput").value;
+  const dates = document.getElementById("datesInput").value;
+  const message = document.getElementById("messageInput").value;
+
+  const hasPhoto = photoDataUrl !== "";
+
+  const tributeHTML = `
+${generateTemplate(name, dates, message, hasPhoto ? photoDataUrl : null)}
+  `.trim();
+
+  document.getElementById("output").textContent = tributeHTML;
+
+  window.generatedHTML = tributeHTML;
 }
 
-// Wrap tribute HTML in password-protected shell (if password provided)
-function wrapEncryptedPage(html, password) {
-  const encrypted = CryptoJS.AES.encrypt(html, password).toString();
+function downloadHTML() {
+  if (!window.generatedHTML) return alert("Generate the page first!");
 
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Protected Tribute Page</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  const blob = new Blob([window.generatedHTML], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
 
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: #0b0b10;
-    color: #eee;
-    padding: 20px;
-    text-align: center;
-  }
-  input {
-    padding: 12px;
-    width: 80%;
-    max-width: 260px;
-    margin-top: 20px;
-    border-radius: 6px;
-    border: 1px solid #333;
-    background: #1a1a22;
-    color: #eee;
-  }
-  button {
-    margin-top: 20px;
-    padding: 12px 18px;
-    background: #f5d28a;
-    color: #000;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-</style>
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tribute-page.html";
+  a.click();
 
-</head>
-<body>
-
-<h2>This tribute page is protected</h2>
-<p>Please enter the password to view it.</p>
-
-<input id="pw" type="password" placeholder="Password">
-<button onclick="unlock()">Unlock</button>
-
-<script>
-  const encrypted = "${encrypted}";
-
-  function unlock() {
-    const pw = document.getElementById('pw').value;
-    try {
-      const bytes = CryptoJS.AES.decrypt(encrypted, pw);
-      const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-
-      if (!decrypted) {
-        alert("Incorrect password");
-        return;
-      }
-
-      document.open();
-      document.write(decrypted);
-      document.close();
-    } catch (e) {
-      alert("Incorrect password");
-    }
-  }
-</script>
-
-</body>
-</html>
-  `;
+  URL.revokeObjectURL(url);
 }
 
-// Tribute page template
 function generateTemplate(name, dates, message, photo) {
   return `
 <!DOCTYPE html>
@@ -107,7 +51,6 @@ function generateTemplate(name, dates, message, photo) {
 <title>In Loving Memory of ${name}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-
 <style>
   body {
     font-family: system-ui, sans-serif;
@@ -179,7 +122,6 @@ function generateTemplate(name, dates, message, photo) {
   }
 </style>
 </head>
-
 <body>
 
 <div class="header-label">In loving memory of</div>
@@ -199,40 +141,4 @@ function generateTemplate(name, dates, message, photo) {
 </body>
 </html>
   `;
-}
-
-// Main generate function
-async function generateTribute() {
-  const name = document.getElementById("nameInput").value.trim();
-  const dates = document.getElementById("datesInput").value.trim();
-  const message = document.getElementById("messageInput").value.trim();
-  const password = document.getElementById("passwordInput").value;
-  const photoFile = document.getElementById("photoInput").files[0];
-
-  const photoDataUrl = await readPhotoFile(photoFile);
-
-  let tributeHTML = generateTemplate(name || "Your Loved One", dates, message, photoDataUrl);
-
-  if (password) {
-    tributeHTML = wrapEncryptedPage(tributeHTML, password);
-  }
-
-  lastTributeHTML = tributeHTML;
-
-  const blob = new Blob([tributeHTML], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  previewFrame.src = url;
-
-  formSection.style.display = "none";
-  previewSection.style.display = "block";
-}
-
-function goBack() {
-  previewSection.style.display = "none";
-  formSection.style.display = "block";
-  previewFrame.src = "about:blank";
-}
-
-function buyNow() {
-  alert("Buy Now clicked — this is where your GitHub Actions email workflow will connect.");
 }
