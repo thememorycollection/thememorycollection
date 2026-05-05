@@ -121,30 +121,84 @@ function generateLockedPage(encrypted) {
 <style>
   body {
     font-family: system-ui, sans-serif;
-    background: #0d0d12;
-    color: #eee;
+    background: linear-gradient(to bottom, #050509, #151520);
+    color: #f5f5f5;
+    padding: 40px 20px;
+    max-width: 720px;
+    margin: auto;
     text-align: center;
-    padding: 40px;
   }
+
+  h2 {
+    font-family: "Playfair Display", serif;
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: #b3b3c2;
+    letter-spacing: 0.05em;
+    margin-bottom: 30px;
+  }
+
   input {
-    padding: 10px;
     width: 80%;
     max-width: 260px;
-    margin-top: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(0,0,0,0.4) inset;
   }
+
+  input::placeholder {
+    color: #aaa;
+  }
+
   button {
-    margin-top: 20px;
-    padding: 10px 20px;
+    margin-top: 25px;
+    padding: 12px 26px;
+    border-radius: 8px;
+    border: none;
+    background: #f5a623;
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(245,166,35,0.5);
+    transition: 0.2s ease;
+  }
+
+  button:hover {
+    background: #ffb948;
+    box-shadow: 0 0 25px rgba(245,166,35,0.7);
+  }
+
+  /* Candle glow element for consistency */
+  .candle-glow {
+    width: 90px;
+    height: 90px;
+    margin: 40px auto 0;
+    background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
+    border-radius: 999px;
+    box-shadow: 0 0 25px rgba(245,210,138,0.8);
   }
 </style>
 </head>
 
 <body>
+
 <h2>This tribute is password protected</h2>
-<p>Please enter the password to view it</p>
+<p>Please enter the password to continue</p>
 
 <input id="pw" type="password" placeholder="Password">
-<button onclick="unlock()">Unlock</button>
+<br>
+<button onclick="unlock()">Unlock Tribute</button>
+
+<div class="candle-glow"></div>
 
 <script>
   const encrypted = ${JSON.stringify(encrypted)};
@@ -167,38 +221,7 @@ function generateLockedPage(encrypted) {
           name: "PBKDF2",
           salt: enc.encode("returning-hearts-salt"),
           iterations: 120000,
-          hash: "SHA-256"
-        },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["decrypt"]
-      );
 
-      const iv = new Uint8Array(encrypted.iv);
-      const data = new Uint8Array(encrypted.data);
-
-      const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv },
-        key,
-        data
-      );
-
-      const html = new TextDecoder().decode(decrypted);
-      document.open();
-      document.write(html);
-      document.close();
-
-    } catch (e) {
-      alert("Incorrect password");
-    }
-  }
-</script>
-
-</body>
-</html>
-  `;
-}
 
 // Tribute page template (dark candle-lit) with slideshow
 function generateTemplate(name, dates, message, photos) {
