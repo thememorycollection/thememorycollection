@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   let photoDataUrl = "";
-  let lastTributeURL = ""; // Stores the Blob URL for preview
+  
 
   const photoInput = document.getElementById("photoInput");
 if (photoInput) {
