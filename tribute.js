@@ -49,9 +49,9 @@ function generateTribute() {
   const name = document.getElementById("nameInput").value;
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
-  const password = document.getelementById("passwordInput").value;
+  const password = document.getElementById("passwordInput").value;
 
-  let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null;
+  let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
 
   if (password.trim() !== "") {
     tributeHTML = wrapEncryptedPage(tributeHTML, password);
