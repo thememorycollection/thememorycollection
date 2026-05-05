@@ -140,7 +140,7 @@ function wrapEncryptedPage(html, password) {
 </html>
   `;
 }
-function generateTemplate(name, dates, message, photo) {
+function generateTribute(name, dates, message, photo) {
   return `
 <!DOCTYPE html>
 <html lang="en">
