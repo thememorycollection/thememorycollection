@@ -125,6 +125,15 @@ body {
     opacity: 1;
 }
 
+#slideshow, #photos {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    height: 60vh; /* THIS IS THE IMPORTANT PART */
+    margin: 20px auto;
+    overflow: hidden;
+}
+
 
 .slideshow {
     position: relative;
