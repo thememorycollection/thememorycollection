@@ -1,31 +1,19 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Tribute – TheMemoryCollection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="tribute.css">
+
+  <!-- Load CryptoJS BEFORE tribute.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script src="tribute.js"></script>
-  <meta charset="UTF-8">
-  <title>Preview Tribute</title>
-  <link rel="stylesheet" href="tribute.css">
-  
 </head>
+
 <body>
 
-<div id="passwordPrompt" style="display:none;">
-  <h2>This tribute is password protected</h2>
-  <input id="passwordEntry" type="password" placeholder="Enter password">
-  <button onclick="unlock()">Unlock</button>
-</div>
-
-<div id="previewContent" style="display:none;">
-  <h1 id="name"></h1>
-  <h2 id="dates"></h2>
-  <p id="message"></p>
-  <div id="photos"></div>
-
-  
-</div>
-
+<!-- Soft password modal overlay -->
 <div id="passwordModal">
   <div id="passwordBox">
     <h2>Enter Password</h2>
@@ -34,11 +22,17 @@
   </div>
 </div>
 
+<!-- Tribute content -->
+<div id="tributeWrapper">
+  <h1 id="name"></h1>
+  <h2 id="dates"></h2>
+  <p id="message"></p>
+  <div id="photos"></div>
+</div>
 
 <script>
-  initPreviewPage();
+  initViewPage();
 </script>
-
 
 </body>
 </html>
