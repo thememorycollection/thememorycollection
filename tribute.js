@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
   let photoDataUrl = "";
+  let lastTributeURL = ""; // Stores the Blob URL for preview
 
   // Handle photo upload
   const photoInput = document.getElementById("photoInput");
@@ -23,32 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("formSection").style.display = "block";
   };
 
-  // Download tribute page
-  window.downloadHTML = function () {
-    if (!window.generatedHTML) return alert("Generate the page first!");
-
-    const blob = new Blob([window.generatedHTML], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "tribute-page.html";
-    a.click();
-
-    URL.revokeObjectURL(url);
-  };
-
-  // Show preview (no iframe)
-  window.showPreview = function (html) {
-    const output = document.getElementById("previewOutput");
-    output.innerHTML = html;
-
-    document.getElementById("formSection").style.display = "none";
-    document.getElementById("previewSection").style.display = "block";
-
-    window.generatedHTML = html;
-  };
-
   // Generate tribute page
   window.generateTribute = function () {
     const name = document.getElementById("nameInput").value;
@@ -58,25 +33,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
 
-    // Insert return URL
-    const returnURL = encodeURIComponent(window.location.href);
-    tributeHTML = tributeHTML.replace("{{RETURN_URL}}", returnURL);
+    // Insert placeholder return URL (will be replaced after Blob creation)
+    tributeHTML = tributeHTML.replace("{{RETURN_URL}}", "RETURN_PLACEHOLDER");
 
     // Encrypt if password set
     if (password.trim() !== "") {
       tributeHTML = wrapEncryptedPage(tributeHTML, password);
     }
 
-    // Strip outer HTML for preview
-    let previewHTML = tributeHTML
-      .replace(/<!DOCTYPE[^>]*>/i, "")
-      .replace(/<html[^>]*>/i, "")
-      .replace(/<\/html>/i, "")
-      .replace(/<head[^>]*>[\s\S]*?<\/head>/i, "")
-      .replace(/<body[^>]*>/i, "")
-      .replace(/<\/body>/i, "");
+    // Create Blob URL for the tribute preview
+    const blob = new Blob([tributeHTML], { type: "text/html" });
+    lastTributeURL = URL.createObjectURL(blob);
 
-    showPreview(previewHTML);
+    // Now that we have the real URL, regenerate the tribute with correct return URL
+    let tributeWithReturn = tributeHTML.replace("RETURN_PLACEHOLDER", encodeURIComponent(lastTributeURL));
+
+    // Create a new Blob with the corrected return URL
+    const finalBlob = new Blob([tributeWithReturn], { type: "text/html" });
+    lastTributeURL = URL.createObjectURL(finalBlob);
+
+    // Open the tribute preview in a new tab
+    window.open(lastTributeURL, "_blank");
   };
 
 }); // END DOMContentLoaded
