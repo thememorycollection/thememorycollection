@@ -1,6 +1,6 @@
-
 let photoDataUrl = "";
 
+// Handle photo upload (browser-only)
 document.getElementById("photoInput").addEventListener("change", function(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -12,22 +12,24 @@ document.getElementById("photoInput").addEventListener("change", function(event)
   reader.readAsDataURL(file);
 });
 
-function generateTribute() {
-  const name = document.getElementById("nameInput").value;
-  const dates = document.getElementById("datesInput").value;
-  const message = document.getElementById("messageInput").value;
+// Switch to preview mode
+function showPreview(html) {
+  const frame = document.getElementById("previewFrame");
+  frame.srcdoc = html;
 
-  const hasPhoto = photoDataUrl !== "";
+  document.getElementById("formSection").style.display = "none";
+  document.getElementById("previewSection").style.display = "block";
 
-  const tributeHTML = `
-${generateTemplate(name, dates, message, hasPhoto ? photoDataUrl : null)}
-  `.trim();
-
-  document.getElementById("output").textContent = tributeHTML;
-
-  window.generatedHTML = tributeHTML;
+  window.generatedHTML = html;
 }
 
+// Go back to form
+function goBack() {
+  document.getElementById("previewSection").style.display = "none";
+  document.getElementById("formSection").style.display = "block";
+}
+
+// Download tribute page
 function downloadHTML() {
   if (!window.generatedHTML) return alert("Generate the page first!");
 
@@ -42,6 +44,18 @@ function downloadHTML() {
   URL.revokeObjectURL(url);
 }
 
+// Generate tribute page HTML
+function generateTribute() {
+  const name = document.getElementById("nameInput").value;
+  const dates = document.getElementById("datesInput").value;
+  const message = document.getElementById("messageInput").value;
+
+  const tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+
+  showPreview(tributeHTML);
+}
+
+// Tribute page template (dark candle-lit)
 function generateTemplate(name, dates, message, photo) {
   return `
 <!DOCTYPE html>
@@ -51,6 +65,7 @@ function generateTemplate(name, dates, message, photo) {
 <title>In Loving Memory of ${name}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+
 <style>
   body {
     font-family: system-ui, sans-serif;
@@ -122,6 +137,7 @@ function generateTemplate(name, dates, message, photo) {
   }
 </style>
 </head>
+
 <body>
 
 <div class="header-label">In loving memory of</div>
