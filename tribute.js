@@ -36,20 +36,22 @@ if (photoInput) {
 
   // Generate tribute page
   window.generateTribute = function () {
-    const name = document.getElementById("nameInput").value;
-    const dates = document.getElementById("datesInput").value;
-    const message = document.getElementById("messageInput").value;
-    const password = document.getElementById("passwordInput").value;
+  const name = document.getElementById("nameInput").value;
+  const dates = document.getElementById("datesInput").value;
+  const message = document.getElementById("messageInput").value;
+  const password = document.getElementById("passwordInput").value;
 
-    let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+  let tributeHTML = generateTemplate(name, dates, message, null);
 
-    // Insert placeholder return URL (will be replaced after Blob creation)
-    tributeHTML = tributeHTML.replace("{{RETURN_URL}}", "RETURN_PLACEHOLDER");
+  if (password.trim() !== "") {
+    tributeHTML = wrapEncryptedPage(tributeHTML, password);
+  }
 
-    // Encrypt if password set
-    if (password.trim() !== "") {
-      tributeHTML = wrapEncryptedPage(tributeHTML, password);
-    }
+  const blob = new Blob([tributeHTML], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  window.open(url, "_blank");
+};
 
     // Create Blob URL for the tribute preview
     const blob = new Blob([tributeHTML], { type: "text/html" });
