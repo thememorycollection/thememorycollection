@@ -44,7 +44,8 @@ function initPreviewPage() {
     showPasswordModal();
 
     window.unlock = function () {
-        const password = document.getElementById("passwordEntry").value;
+        let password = document.getElementById("passwordEntry").value.trim();
+
         const bytes = CryptoJS.AES.decrypt(encrypted, password);
         const text = bytes.toString(CryptoJS.enc.Utf8);
 
@@ -103,7 +104,6 @@ function showTribute(data) {
     document.getElementById("dates").textContent = data.dates || "";
     document.getElementById("message").textContent = data.message || "";
 
-    // Support both #slideshow (new) and #photos (old) to avoid crashes
     const slideshow = document.getElementById("slideshow") || document.getElementById("photos");
     if (!slideshow) return;
 
@@ -121,7 +121,6 @@ function showTribute(data) {
         slideshow.appendChild(slide);
     });
 
-    // Auto-play slideshow
     let current = 0;
     const slides = slideshow.querySelectorAll(".slide");
 
@@ -139,7 +138,6 @@ function showTribute(data) {
 --------------------------------------------------------- */
 window.handlePhotoUpload = function (event) {
     const files = event.target.files;
-    const readers = [];
 
     window.selectedPhotos = [];
 
