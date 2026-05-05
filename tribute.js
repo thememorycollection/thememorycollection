@@ -160,22 +160,22 @@ function generateTemplate(name, dates, message, photo) {
 </div>
 
 <div style="text-align:center; margin-top:30px;">
-  <a href="#" onclick="goToSlideshow(); return false;" style="...">
-
-
-   style="
-     display:inline-block;
-     padding:12px 20px;
-     background:#f5d28a;
-     color:#000;
-     text-decoration:none;
-     border-radius:8px;
-     font-weight:600;
-     font-size:1rem;
-   ">
-   View Tribute Slideshow
-</a>
+  <a href="#"
+     onclick="goToSlideshow(); return false;"
+     style="
+       display:inline-block;
+       padding:12px 20px;
+       background:#f5d28a;
+       color:#000;
+       text-decoration:none;
+       border-radius:8px;
+       font-weight:600;
+       font-size:1rem;
+     ">
+     View Tribute Slideshow
+  </a>
 </div>
+
 <script>
   function goToSlideshow() {
     location.href = 'slideshow.html?return=' + encodeURIComponent(location.href);
