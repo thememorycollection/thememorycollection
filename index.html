@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="tribute.css">
 
 
+
 </head>
 <body>
 
@@ -26,6 +27,9 @@
 
   <label>Photo (optional)</label>
   <input type="file" id="photoInput" accept="image/*">
+
+  <label>Password (optional)</label>
+  <input id="PasswordInput" type="password" placeholder="Choose a password">
 
   <button onclick="generateTribute()">Generate Tribute Page</button>
 </div>
@@ -51,7 +55,7 @@ function generateTemplate(name, dates, message, photo) {
 <title>In Loving Memory of ${name}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <style>
   body {
     font-family: system-ui, sans-serif;
