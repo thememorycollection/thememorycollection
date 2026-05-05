@@ -105,40 +105,36 @@ function initTributePage(isPreviewPage = false) {
 // -----------------------------
 
 function generateTribute() {
-    const name = document.getElementById("nameInput").value.trim();
-    const dates = document.getElementById("datesInput").value.trim();
-    const message = document.getElementById("messageInput").value.trim();
-    const password = document.getElementById("passwordInput").value;
+  const name = document.getElementById("nameInput").value.trim();
+  const dates = document.getElementById("datesInput").value.trim();
+  const message = document.getElementById("messageInput").value.trim();
+  const password = document.getElementById("passwordInput").value;
 
-    const files = document.getElementById("photoInput").files;
-    const readers = [];
+  const files = document.getElementById("photoInput").files;
+  const readers = [];
 
-    for (let i = 0; i < files.length; i++) {
-        readers.push(new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(e.target.result);
-            reader.readAsDataURL(files[i]);
-        }));
+  for (let i = 0; i < files.length; i++) {
+    readers.push(new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result);
+      reader.readAsDataURL(files[i]);
+    }));
+  }
+
+  Promise.all(readers).then(photoDataUrls => {
+    const tributeObj = { name, dates, message, photos: photoDataUrls };
+    const json = JSON.stringify(tributeObj);
+
+    let payload;
+    if (password.trim() !== "") {
+      // AES encrypt with password
+      payload = CryptoJS.AES.encrypt(json, password).toString();
+    } else {
+      // Plain base64
+      payload = btoa(json);
     }
 
-    Promise.all(readers).then(photoDataUrls => {
-        const tributeObj = {
-            name,
-            dates,
-            message,
-            photos: photoDataUrls
-        };
-
-        const json = JSON.stringify(tributeObj);
-        let payload;
-
-        if (password.trim() !== "") {
-            payload = CryptoJS.AES.encrypt(json, password).toString();
-        } else {
-            payload = btoa(json);
-        }
-
-        const encoded = encodeURIComponent(payload);
-        window.location.href = "preview.html#" + encoded;
-    });
+    const encoded = encodeURIComponent(payload);
+    window.location.href = "preview.html#" + encoded;
+  });
 }
