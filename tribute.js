@@ -14,6 +14,44 @@ document.getElementById("photoInput").addEventListener("change", function(event)
   });
 });
 
+// Encrypt tribute HTML using password
+async function encryptText(text, password) {
+  const enc = new TextEncoder();
+
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveKey"]
+  );
+
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: enc.encode("returning-hearts-salt"),
+      iterations: 120000,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt"]
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    enc.encode(text)
+  );
+
+  return {
+    iv: Array.from(iv),
+    data: Array.from(new Uint8Array(encrypted))
+  };
+}
+
 // Switch to preview mode
 function showPreview(html) {
   const frame = document.getElementById("previewFrame");
@@ -47,14 +85,119 @@ function downloadHTML() {
 }
 
 // Generate tribute page HTML
-function generateTribute() {
+async function generateTribute() {
   const name = document.getElementById("nameInput").value;
   const dates = document.getElementById("datesInput").value;
   const message = document.getElementById("messageInput").value;
+  const password = document.getElementById("passwordInput").value;
 
   const tributeHTML = generateTemplate(name, dates, message, photoDataUrls);
 
-  showPreview(tributeHTML);
+  // No password → normal tribute
+  if (!password) {
+    showPreview(tributeHTML);
+    return;
+  }
+
+  // Encrypt tribute
+  const encrypted = await encryptText(tributeHTML, password);
+
+  // Build locked page
+  const lockedHTML = generateLockedPage(encrypted);
+
+  showPreview(lockedHTML);
+}
+
+// Locked tribute page template
+function generateLockedPage(encrypted) {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Protected Tribute</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #0d0d12;
+    color: #eee;
+    text-align: center;
+    padding: 40px;
+  }
+  input {
+    padding: 10px;
+    width: 80%;
+    max-width: 260px;
+    margin-top: 20px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 10px 20px;
+  }
+</style>
+</head>
+
+<body>
+<h2>This tribute is password protected</h2>
+<p>Please enter the password to view it</p>
+
+<input id="pw" type="password" placeholder="Password">
+<button onclick="unlock()">Unlock</button>
+
+<script>
+  const encrypted = ${JSON.stringify(encrypted)};
+
+  async function unlock() {
+    const password = document.getElementById("pw").value;
+    const enc = new TextEncoder();
+
+    try {
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(password),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+      );
+
+      const key = await crypto.subtle.deriveKey(
+        {
+          name: "PBKDF2",
+          salt: enc.encode("returning-hearts-salt"),
+          iterations: 120000,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+      );
+
+      const iv = new Uint8Array(encrypted.iv);
+      const data = new Uint8Array(encrypted.data);
+
+      const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv },
+        key,
+        data
+      );
+
+      const html = new TextDecoder().decode(decrypted);
+      document.open();
+      document.write(html);
+      document.close();
+
+    } catch (e) {
+      alert("Incorrect password");
+    }
+  }
+</script>
+
+</body>
+</html>
+  `;
 }
 
 // Tribute page template (dark candle-lit) with slideshow
