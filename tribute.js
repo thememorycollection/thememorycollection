@@ -1,23 +1,66 @@
-const formSection = document.getElementById("formSection");
-const previewSection = document.getElementById("previewSection");
-const previewFrame = document.getElementById("previewFrame");
+let photoDataUrl = "";
 
-let lastTributeHTML = "";
+// Handle photo upload (browser-only)
+document.getElementById("photoInput").addEventListener("change", function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
 
-// Read image as data URL
-function readPhotoFile(file) {
-  return new Promise((resolve) => {
-    if (!file) {
-      resolve("");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.readAsDataURL(file);
-  });
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    photoDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// Switch to preview mode
+function showPreview(html) {
+  const frame = document.getElementById("previewFrame");
+  frame.srcdoc = html;
+
+  document.getElementById("formSection").style.display = "none";
+  document.getElementById("previewSection").style.display = "block";
+
+  window.generatedHTML = html;
 }
 
-// Wrap tribute HTML in password-protected shell (if password provided)
+// Go back to form
+function goBack() {
+  document.getElementById("previewSection").style.display = "none";
+  document.getElementById("formSection").style.display = "block";
+}
+
+// Download tribute page
+function downloadHTML() {
+  if (!window.generatedHTML) return alert("Generate the page first!");
+
+  const blob = new Blob([window.generatedHTML], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "tribute-page.html";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+// Generate tribute page HTML
+function generateTribute() {
+  const name = document.getElementById("nameInput").value;
+  const dates = document.getElementById("datesInput").value;
+  const message = document.getElementById("messageInput").value;
+  const password = document.getElementById("passwordInput").value;
+
+  let tributeHTML = generateTemplate(name, dates, message, photoDataUrl || null);
+
+  if (password.trim() !== "") {
+    tributeHTML = wrapEncryptedPage(tributeHTML, password);
+  }
+
+  showPreview(tributeHTML);
+}
+
+// Tribute page template (dark candle-lit)
 function wrapEncryptedPage(html, password) {
   const encrypted = CryptoJS.AES.encrypt(html, password).toString();
 
@@ -95,144 +138,4 @@ function wrapEncryptedPage(html, password) {
 </body>
 </html>
   `;
-}
-
-// Tribute page template
-function generateTemplate(name, dates, message, photo) {
-  return `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>In Loving Memory of ${name}</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-
-<style>
-  body {
-    font-family: system-ui, sans-serif;
-    background: linear-gradient(to bottom, #050509, #151520);
-    color: #f5f5f5;
-    padding: 20px;
-    max-width: 720px;
-    margin: auto;
-  }
-  .header-label {
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: #b3b3c2;
-    font-size: 0.8rem;
-    text-align: center;
-  }
-  h1 {
-    font-family: "Playfair Display", serif;
-    text-align: center;
-    margin: 6px 0;
-  }
-  .dates {
-    text-align: center;
-    color: #b3b3c2;
-    letter-spacing: 0.16em;
-  }
-  .portrait {
-    margin: 30px auto;
-    width: 260px;
-    height: 340px;
-    border-radius: 999px;
-    overflow: hidden;
-    box-shadow: 0 18px 40px rgba(0,0,0,0.9);
-  }
-  .portrait img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .quote {
-    font-size: 1rem;
-    line-height: 1.7;
-    margin-top: 20px;
-    text-align: center;
-  }
-  .candle {
-    margin: 40px auto;
-    width: 80px;
-    height: 80px;
-    background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
-    border-radius: 999px;
-    box-shadow: 0 0 25px rgba(245,210,138,0.8);
-    position: relative;
-  }
-  .flame {
-    width: 18px;
-    height: 32px;
-    background: linear-gradient(to bottom, #fff, #f5a623 70%, #f08a1a);
-    border-radius: 50%;
-    position: absolute;
-    top: 10px;
-    left: 31px;
-    animation: flicker 3s infinite ease-in-out;
-  }
-  @keyframes flicker {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(1px); }
-    100% { transform: translateX(0); }
-  }
-</style>
-</head>
-
-<body>
-
-<div class="header-label">In loving memory of</div>
-<h1>${name}</h1>
-<div class="dates">${dates}</div>
-
-<div class="portrait">
-  ${photo ? `<img src="${photo}" alt="Portrait of ${name}">` : ""}
-</div>
-
-<div class="quote">“${message}”</div>
-
-<div class="candle">
-  <div class="flame"></div>
-</div>
-
-</body>
-</html>
-  `;
-}
-
-// Main generate function
-async function generateTribute() {
-  const name = document.getElementById("nameInput").value.trim();
-  const dates = document.getElementById("datesInput").value.trim();
-  const message = document.getElementById("messageInput").value.trim();
-  const password = document.getElementById("passwordInput").value;
-  const photoFile = document.getElementById("photoInput").files[0];
-
-  const photoDataUrl = await readPhotoFile(photoFile);
-
-  let tributeHTML = generateTemplate(name || "Your Loved One", dates, message, photoDataUrl);
-
-  if (password) {
-    tributeHTML = wrapEncryptedPage(tributeHTML, password);
-  }
-
-  lastTributeHTML = tributeHTML;
-
-  const blob = new Blob([tributeHTML], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  previewFrame.src = url;
-
-  formSection.style.display = "none";
-  previewSection.style.display = "block";
-}
-
-function goBack() {
-  previewSection.style.display = "none";
-  formSection.style.display = "block";
-  previewFrame.src = "about:blank";
-}
-
-function buyNow() {
-  alert("Buy Now clicked — this is where your GitHub Actions email workflow will connect.");
 }
