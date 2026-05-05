@@ -160,8 +160,8 @@ function generateTemplate(name, dates, message, photo) {
 </div>
 
 <div style="text-align:center; margin-top:30px;">
-  <a href="#"
-   onclick="location.href = 'slideshow.html?return=' + encodeURIComponent(location.href); return false;"
+  <a href="#" onclick="goToSlideshow(); return false;" style="...">
+
 
    style="
      display:inline-block;
