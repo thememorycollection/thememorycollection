@@ -160,13 +160,30 @@ function showTribute(data) {
     document.getElementById("dates").textContent = data.dates || "";
     document.getElementById("message").textContent = data.message || "";
 
-    const container = document.getElementById("photos");
-    container.innerHTML = "";
+    const slideshow = document.getElementById("slideshow");
+    slideshow.innerHTML = "";
 
-    (data.photos || []).forEach(src => {
+    (data.photos || []).forEach((src, index) => {
+        const slide = document.createElement("div");
+        slide.className = "slide";
+        if (index === 0) slide.classList.add("active");
+
         const img = document.createElement("img");
         img.src = src;
-        img.className = "tribute-photo";
-        container.appendChild(img);
+
+        slide.appendChild(img);
+        slideshow.appendChild(slide);
     });
+
+    // Auto-play slideshow
+    let current = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    if (slides.length > 1) {
+        setInterval(() => {
+            slides[current].classList.remove("active");
+            current = (current + 1) % slides.length;
+            slides[current].classList.add("active");
+        }, 5000); // 5 seconds per slide
+    }
 }
