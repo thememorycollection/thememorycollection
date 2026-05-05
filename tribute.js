@@ -181,6 +181,7 @@ function generateTemplate(name, dates, message, photo) {
     location.href = 'slideshow.html?return=' + encodeURIComponent(location.href);
   }
 </script>
+
 </body>
 </html>
   `;
