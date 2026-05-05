@@ -71,65 +71,78 @@ function generateTemplate(name, dates, message, photo) {
     font-family: system-ui, sans-serif;
     background: linear-gradient(to bottom, #050509, #151520);
     color: #f5f5f5;
-    padding: 20px;
+    padding: 16px;
     max-width: 720px;
     margin: auto;
   }
+
   .header-label {
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: #b3b3c2;
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
     text-align: center;
   }
+
   h1 {
     font-family: "Playfair Display", serif;
     text-align: center;
     margin: 6px 0;
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
   }
+
   .dates {
     text-align: center;
     color: #b3b3c2;
     letter-spacing: 0.16em;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
   }
+
   .portrait {
-    margin: 30px auto;
-    width: 260px;
-    height: 340px;
+    margin: 24px auto;
+    width: min(260px, 70vw);
+    height: auto;
+    aspect-ratio: 3 / 4;
     border-radius: 999px;
     overflow: hidden;
     box-shadow: 0 18px 40px rgba(0,0,0,0.9);
   }
+
   .portrait img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
+
   .quote {
-    font-size: 1rem;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
     line-height: 1.7;
     margin-top: 20px;
     text-align: center;
+    padding: 0 10px;
   }
+
   .candle {
     margin: 40px auto;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background: radial-gradient(circle, #fbe3a4, #f5a623 55%, transparent 70%);
     border-radius: 999px;
     box-shadow: 0 0 25px rgba(245,210,138,0.8);
     position: relative;
   }
+
   .flame {
-    width: 18px;
-    height: 32px;
+    width: 16px;
+    height: 28px;
     background: linear-gradient(to bottom, #fff, #f5a623 70%, #f08a1a);
     border-radius: 50%;
     position: absolute;
-    top: 10px;
-    left: 31px;
+    top: 8px;
+    left: calc(50% - 8px);
     animation: flicker 3s infinite ease-in-out;
   }
+
   @keyframes flicker {
     0% { transform: translateX(0); }
     50% { transform: translateX(1px); }
