@@ -123,7 +123,7 @@ function generateTemplate(name, dates, message, photos) {
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity 1.2s ease-in-out;
+    transition: opacity 1.3s ease-in-out;
   }
 
   .slide img {
@@ -198,7 +198,7 @@ ${photos.length > 0 ? `
   }
 
   if (slides.length > 1) {
-    setInterval(showSlide, 4000);
+    setInterval(showSlide, 5000);
   }
 </script>
 
